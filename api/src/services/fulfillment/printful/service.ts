@@ -195,8 +195,6 @@ export class PrintfulService {
           max_delivery_date?: string;
         }> };
 
-        console.log('[Printful Shipping Rates] Raw API Response:', JSON.stringify(data, null, 2));
-
         const transformedResult = {
           rates: (data.data || []).map(rate => ({
             id: rate.shipping,
@@ -210,8 +208,6 @@ export class PrintfulService {
           })),
           currency: params.currency || 'USD',
         };
-
-        console.log('[Printful Shipping Rates] Transformed Output:', JSON.stringify(transformedResult, null, 2));
 
         return transformedResult;
       },
@@ -289,23 +285,20 @@ export class PrintfulService {
           email: input.recipient.email,
         };
 
-        const orderItems: CatalogItem[] = input.items.map(item => ({
-          source: CatalogItem.source.CATALOG,
-          catalog_variant_id: item.variantId ?? 0,
-          quantity: item.quantity,
-          placements: item.files
-            ?.filter(f => f.placement)
-            .map(f => ({
-              placement: f.placement!,
-              technique: TechniqueEnum.DTG,
-              layers: [{ type: 'file', url: f.url }],
-            })),
-        }));
+        const items = input.items.map(item => {
+          if (!item.externalVariantId) {
+            throw new Error('Missing externalVariantId for Printful order item');
+          }
+          return {
+            sync_variant_id: parseInt(item.externalVariantId, 10),
+            quantity: item.quantity,
+          };
+        });
 
-        const result = await this.client.createOrder({
-          external_id: input.externalId,
+        const result = await this.client.createOrderV1({
+          external_id: input.externalId.replace(/-/g, ''),
           recipient,
-          order_items: orderItems,
+          items,
         });
         
         if (confirm) await this.client.confirmOrder(result.id);

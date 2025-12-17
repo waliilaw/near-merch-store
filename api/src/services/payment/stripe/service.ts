@@ -26,7 +26,7 @@ export class StripePaymentService {
                 description: item.description,
                 images: item.image ? [item.image] : undefined,
               },
-              unit_amount: Math.round(item.unitAmount * 100),
+              unit_amount: item.unitAmount,
             },
             quantity: item.quantity,
           })),
