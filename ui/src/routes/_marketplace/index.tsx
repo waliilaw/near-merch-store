@@ -9,7 +9,7 @@ import {
   productLoaders,
   useFeaturedProducts,
   type Product
-} from "@/integrations/marketplace-api";
+} from "@/integrations/api";
 import { queryClient } from "@/utils/orpc";
 import {
   createFileRoute,

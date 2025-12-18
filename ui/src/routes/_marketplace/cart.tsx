@@ -3,7 +3,7 @@ import { ArrowLeft, Minus, Plus, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { ProductCard } from '@/components/marketplace/product-card';
-import { SIZES } from '@/integrations/marketplace-api';
+import { SIZES } from '@/integrations/api';
 
 export const Route = createFileRoute('/_marketplace/cart')({
   component: CartPage,

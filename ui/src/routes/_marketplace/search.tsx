@@ -9,7 +9,7 @@ import {
   productLoaders,
   COLLECTIONS,
   type ProductCategory,
-} from '@/integrations/marketplace-api';
+} from '@/integrations/api';
 import { queryClient } from '@/utils/orpc';
 
 type SearchParams = {

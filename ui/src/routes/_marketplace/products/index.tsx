@@ -10,7 +10,7 @@ import {
   useProducts,
   type Product,
   type ProductCategory,
-} from "@/integrations/marketplace-api";
+} from "@/integrations/api";
 import { queryClient } from "@/utils/orpc";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";

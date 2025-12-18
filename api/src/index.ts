@@ -28,8 +28,8 @@ export default createPlugin({
     PRINTFUL_API_KEY: z.string().optional(),
     PRINTFUL_STORE_ID: z.string().optional(),
     PRINTFUL_WEBHOOK_SECRET: z.string().optional(),
-    DATABASE_URL: z.string().default('file:./marketplace.db'),
-    DATABASE_AUTH_TOKEN: z.string().optional(),
+    API_DATABASE_URL: z.string().default('file:./marketplace.db'),
+    API_DATABASE_AUTH_TOKEN: z.string().optional(),
   }),
 
   context: z.object({
@@ -75,7 +75,7 @@ export default createPlugin({
         )
       );
 
-      const dbLayer = DatabaseLive(config.secrets.DATABASE_URL, config.secrets.DATABASE_AUTH_TOKEN);
+      const dbLayer = DatabaseLive(config.secrets.API_DATABASE_URL, config.secrets.API_DATABASE_AUTH_TOKEN);
 
       const appLayer = ProductServiceLive(runtime).pipe(
         Layer.provide(ProductStoreLive),

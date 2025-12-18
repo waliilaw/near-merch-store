@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
-// import { COLLECTIONS } from "@/integrations/marketplace-api"; // HIDDEN: Collections feature
+// import { COLLECTIONS } from "@/integrations/api"; // HIDDEN: Collections feature
 import { authClient } from "@/lib/auth-client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NearMark } from "@/components/near-mark";
@@ -135,7 +135,7 @@ export function MarketplaceHeader() {
             ) : session ? (
               <>
                 {(session.user as { role?: string })?.role === "admin" && (
-                  <Link to="/admin">
+                  <Link to="/dashboard">
                     <Button variant="ghost" size="icon" className="text-[#00ec97]" title="Admin Dashboard">
                       <Shield className="h-5 w-5" />
                     </Button>

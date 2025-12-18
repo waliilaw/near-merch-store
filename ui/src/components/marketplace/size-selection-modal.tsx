@@ -6,7 +6,7 @@ import {
   type Product,
   SIZES,
   requiresSize,
-} from "@/integrations/marketplace-api";
+} from "@/integrations/api";
 
 interface SizeSelectionModalProps {
   product: Product | null;

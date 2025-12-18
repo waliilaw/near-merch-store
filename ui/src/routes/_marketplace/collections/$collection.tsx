@@ -11,7 +11,7 @@ import {
   useSuspenseCollection,
   collectionLoaders,
   type Product,
-} from '@/integrations/marketplace-api';
+} from '@/integrations/api';
 import { queryClient } from '@/utils/orpc';
 
 export const Route = createFileRoute('/_marketplace/collections/$collection')({

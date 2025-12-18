@@ -40,7 +40,7 @@ function LoginPage() {
     setIsConnectingWallet(true);
     try {
       await authClient.requestSignIn.near(
-        { recipient: "marketplace-demo.near" },
+        { recipient: process.env.PUBLIC_ACCOUNT_ID || "every.near", },
         {
           onSuccess: () => {
             setIsConnectingWallet(false);
@@ -68,7 +68,7 @@ function LoginPage() {
     setIsSigningInWithNear(true);
     try {
       await authClient.signIn.near(
-        { recipient: "marketplace-demo.near" },
+        { recipient: process.env.PUBLIC_ACCOUNT_ID || "every.near", },
         {
           onSuccess: async () => {
             setIsSigningInWithNear(false);

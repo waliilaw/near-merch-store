@@ -1,24 +1,24 @@
 import 'dotenv/config';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { createRsbuild, logger } from '@rsbuild/core';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
 import { onError } from '@orpc/server';
-import { formatORPCError } from 'every-plugin/errors';
 import { RPCHandler } from '@orpc/server/fetch';
 import { BatchHandlerPlugin } from '@orpc/server/plugins';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
+import { createRsbuild, logger } from '@rsbuild/core';
+import { eq } from 'drizzle-orm';
+import { formatORPCError } from 'every-plugin/errors';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import config from './rsbuild.config';
-import { initializePlugins } from './src/runtime';
 import { loadBosConfig } from './src/config';
-import { createRouter } from './src/routers';
-import { auth } from './src/lib/auth';
 import { db } from './src/db';
 import * as schema from './src/db/schema/auth';
-import { eq } from 'drizzle-orm';
+import { auth } from './src/lib/auth';
+import { createRouter } from './src/routers';
+import { initializePlugins } from './src/runtime';
 
 async function createContext(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
@@ -47,6 +47,18 @@ async function startServer() {
   const bosConfig = await loadBosConfig();
   const plugins = await initializePlugins();
   const router = createRouter(plugins);
+
+  // Setup graceful shutdown handlers
+  const shutdown = async () => {
+    console.log('[Plugins] Shutting down plugin runtime...');
+    if (plugins.runtime) {
+      await plugins.runtime.shutdown();
+    }
+    process.exit(0);
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 
   const rpcHandler = new RPCHandler(router, {
     plugins: [new BatchHandlerPlugin()],
@@ -131,55 +143,6 @@ async function startServer() {
   });
 
   apiApp.on(['POST', 'GET'], '/api/auth/*', (c) => auth.handler(c.req.raw));
-
-  apiApp.post('/api/webhooks/stripe', async (c) => {
-    const req = c.req.raw;
-    const body = await c.req.text();
-    const signature = c.req.header('stripe-signature') || '';
-    const context = await createContext(req);
-
-    const result = await apiHandler.handle(
-      new Request(req.url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body, signature }),
-      }),
-      { prefix: '/api', context }
-    );
-
-    return result.response
-      ? c.newResponse(result.response.body, result.response)
-      : c.text('Not Found', 404);
-  });
-
-  apiApp.post('/api/webhooks/fulfillment', async (c) => {
-    const req = c.req.raw;
-    const body = await c.req.text();
-    // Gelato uses x-gelato-signature
-    let signature = c.req.header('x-gelato-signature') || '';
-    
-    // Check if it's a Printful webhook (different signature header)
-    // Printful V2 uses x-pf-webhook-signature
-    const printfulSignature = c.req.header('x-pf-webhook-signature');
-    if (printfulSignature) {
-        signature = printfulSignature;
-    }
-
-    const context = await createContext(req);
-
-    const result = await apiHandler.handle(
-      new Request(req.url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body, signature }),
-      }),
-      { prefix: '/api', context }
-    );
-
-    return result.response
-      ? c.newResponse(result.response.body, result.response)
-      : c.text('Not Found', 404);
-  });
 
   apiApp.all('/api/rpc/*', async (c) => {
     const req = c.req.raw;

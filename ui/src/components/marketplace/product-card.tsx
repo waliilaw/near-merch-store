@@ -1,7 +1,7 @@
 import { FavoriteButton } from "@/components/favorite-button";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { type Product, useSuspenseProduct } from "@/integrations/marketplace-api";
+import { type Product, useSuspenseProduct } from "@/integrations/api";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
 import { cn } from "@/lib/utils";

@@ -1,5 +1,5 @@
 import { useCart } from "@/hooks/use-cart";
-import { useOrderByCheckoutSession } from "@/integrations/marketplace-api/orders";
+import { useOrderByCheckoutSession } from "@/integrations/api/orders";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   CheckCircle,

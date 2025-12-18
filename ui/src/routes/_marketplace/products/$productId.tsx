@@ -11,7 +11,7 @@ import {
   useSuspenseProduct,
   type Product,
   type ProductImage
-} from "@/integrations/marketplace-api";
+} from "@/integrations/api";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/utils/orpc";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";

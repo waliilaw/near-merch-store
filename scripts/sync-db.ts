@@ -8,8 +8,8 @@
  * Usage: bun run db:sync
  *
  * Environment variables:
- *   DATABASE_URL - The database URL (libsql:// for Turso, file: for local SQLite)
- *   DATABASE_AUTH_TOKEN - Auth token for Turso (optional for local SQLite)
+ *   API_DATABASE_URL - The database URL (libsql:// for Turso, file: for local SQLite)
+ *   API_DATABASE_AUTH_TOKEN - Auth token for Turso (optional for local SQLite)
  */
 
 import { createClient, type Client } from "@libsql/client";
@@ -22,11 +22,11 @@ config({ path: path.join(import.meta.dir, "../host/.env") });
 const API_URL = "https://near.everything.market/api/products";
 
 function getDatabaseClient(): Client {
-  const url = process.env.DATABASE_URL;
-  const authToken = process.env.DATABASE_AUTH_TOKEN;
+  const url = process.env.API_DATABASE_URL;
+  const authToken = process.env.API_DATABASE_AUTH_TOKEN;
 
   if (!url) {
-    throw new Error("DATABASE_URL environment variable is required");
+    throw new Error("API_DATABASE_URL environment variable is required");
   }
 
   console.log(`   Database: ${url}`);

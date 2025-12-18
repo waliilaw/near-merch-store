@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { CartItem } from "@/integrations/marketplace-api";
+import type { CartItem } from "@/integrations/api";
 import { toast } from "sonner";
 
 const CART_STORAGE_KEY = "marketplace-cart";

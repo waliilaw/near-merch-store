@@ -4,7 +4,7 @@ import {
   requiresSize,
   type Product,
   type CartItem,
-} from "@/integrations/marketplace-api";
+} from "@/integrations/api";
 import { useCartStore } from "@/stores/cart-store";
 
 export interface CartItemWithProduct extends CartItem {

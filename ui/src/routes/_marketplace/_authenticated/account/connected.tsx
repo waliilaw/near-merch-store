@@ -54,7 +54,7 @@ function ConnectedAccountsPage() {
     try {
       if (!accountId) {
         await authClient.requestSignIn.near(
-          { recipient: "marketplace-demo.near" },
+          { recipient: process.env.PUBLIC_ACCOUNT_ID || "every.near", },
           {
             onSuccess: () => {
               setIsProcessingNear(false);
@@ -68,7 +68,7 @@ function ConnectedAccountsPage() {
         );
       } else {
         await authClient.near.link(
-          { recipient: "marketplace-demo.near" },
+          { recipient: process.env.PUBLIC_ACCOUNT_ID || "every.near", },
           {
             onSuccess: () => {
               console.log("NEAR account linked successfully");

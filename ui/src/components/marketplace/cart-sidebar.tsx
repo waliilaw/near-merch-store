@@ -3,7 +3,7 @@ import { X, Plus, Minus, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
 import { ProductCard } from "@/components/marketplace/product-card";
-import { SIZES, requiresSize } from "@/integrations/marketplace-api";
+import { SIZES, requiresSize } from "@/integrations/api";
 
 interface CartSidebarProps {
   isOpen: boolean;
