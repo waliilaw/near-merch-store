@@ -1,16 +1,15 @@
 import { FavoriteButton } from "@/components/marketplace/favorite-button";
+import { useFavorites } from "@/hooks/use-favorites";
+import { type Product, useSuspenseProduct } from "@/integrations/api";
+import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { type Product, useSuspenseProduct } from "@/integrations/api";
-import { useCart } from "@/hooks/use-cart";
-import { useFavorites } from "@/hooks/use-favorites";
-import { cn } from "@/lib/utils";
 import React, { useCallback } from "react";
 
 interface ProductCardProps {
   product?: Product;
   productId?: string;
-  variant?: 'sm' | 'md' | 'lg' | 'horizontal';
+  variant?: "sm" | "md" | "lg" | "horizontal";
   className?: string;
   onQuickAdd?: (product: Product) => void;
   hideActions?: boolean;
@@ -23,14 +22,14 @@ interface ProductCardProps {
 export function ProductCard({
   product,
   productId,
-  variant = 'md',
+  variant = "md",
   className,
   onQuickAdd,
   hideActions = false,
   hideFavorite = false,
   hidePrice = false,
   actionSlot,
-  children
+  children,
 }: ProductCardProps) {
   if (product) {
     return (
@@ -78,8 +77,8 @@ function SuspendedProductCard({
   hideFavorite,
   hidePrice,
   actionSlot,
-  children
-}: { productId: string } & Omit<ProductCardProps, 'product' | 'productId'>) {
+  children,
+}: { productId: string } & Omit<ProductCardProps, "product" | "productId">) {
   const { data } = useSuspenseProduct(productId);
   return (
     <ProductCardContent
@@ -97,14 +96,15 @@ function SuspendedProductCard({
   );
 }
 
-interface ProductCardContentProps extends Omit<ProductCardProps, 'product' | 'productId'> {
+interface ProductCardContentProps
+  extends Omit<ProductCardProps, "product" | "productId"> {
   product: Product;
 }
 
 function ProductCardContent(props: ProductCardContentProps) {
-  const { variant = 'md' } = props;
+  const { variant = "md" } = props;
 
-  if (variant === 'horizontal') {
+  if (variant === "horizontal") {
     return <HorizontalProductLayout {...props} />;
   }
 
@@ -115,16 +115,15 @@ function ProductCardContent(props: ProductCardContentProps) {
 
 function VerticalProductLayout({
   product,
-  variant = 'md',
+  variant = "md",
   className,
   onQuickAdd,
   hideActions,
   hideFavorite,
   hidePrice,
   actionSlot,
-  children
+  children,
 }: ProductCardContentProps) {
-  const { addToCart } = useCart();
   const { favoriteIds, toggleFavorite } = useFavorites();
 
   const handleToggleFavorite = useCallback(
@@ -136,25 +135,38 @@ function VerticalProductLayout({
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      onQuickAdd ? onQuickAdd(product) : addToCart(product.id);
+      if (onQuickAdd) {
+        onQuickAdd(product);
+      }
     },
-    [product, onQuickAdd, addToCart]
+    [product, onQuickAdd]
   );
 
   const isFavorite = favoriteIds.includes(product.id);
-  const displayImage = product.thumbnailImage || product.images?.[0]?.url || product.variants?.[0]?.fulfillmentConfig?.designFiles?.[0]?.url;
+  const displayImage =
+    product.thumbnailImage ||
+    product.images?.[0]?.url ||
+    product.variants?.[0]?.fulfillmentConfig?.designFiles?.[0]?.url;
 
-  const titleSize = variant === "sm" ? "text-sm" : variant === "lg" ? "text-xl" : "text-lg";
-  const priceSize = variant === "sm" ? "text-xs" : variant === "lg" ? "text-lg" : "text-base";
+  const titleSize =
+    variant === "sm" ? "text-sm" : variant === "lg" ? "text-xl" : "text-lg";
+  const priceSize =
+    variant === "sm" ? "text-xs" : variant === "lg" ? "text-lg" : "text-base";
 
   return (
-    <div className={cn(
-      "group relative bg-card dark:bg-card border border-border overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full",
-      className
-    )}>
+    <div
+      className={cn(
+        "group relative bg-card dark:bg-card border border-border overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full",
+        className
+      )}
+    >
       {/* Image Section */}
       <div className="relative bg-[#F0F0F0] overflow-hidden shrink-0 aspect-square w-full">
-        <Link to="/products/$productId" params={{ productId: product.id }} className="block w-full h-full">
+        <Link
+          to="/products/$productId"
+          params={{ productId: product.id }}
+          className="block w-full h-full"
+        >
           {displayImage ? (
             <img
               src={displayImage}
@@ -197,8 +209,17 @@ function VerticalProductLayout({
       {/* Content Section */}
       <div className="p-4 flex-1 space-y-3 flex flex-col">
         <div className="space-y-1">
-          <Link to="/products/$productId" params={{ productId: product.id }} className="block">
-            <h3 className={cn("font-medium text-foreground truncate leading-tight transition-colors hover:text-primary", titleSize)}>
+          <Link
+            to="/products/$productId"
+            params={{ productId: product.id }}
+            className="block"
+          >
+            <h3
+              className={cn(
+                "font-medium text-foreground truncate leading-tight transition-colors hover:text-primary",
+                titleSize
+              )}
+            >
               {product.title}
             </h3>
           </Link>
@@ -231,20 +252,29 @@ function HorizontalProductLayout({
   className,
   hidePrice,
   actionSlot,
-  children
+  children,
 }: ProductCardContentProps) {
   // Horizontal logic is simpler, might not need quick add overly or favorite overlay if used in Cart/Checkout usually
 
-  const displayImage = product.thumbnailImage || product.images?.[0]?.url || product.variants?.[0]?.fulfillmentConfig?.designFiles?.[0]?.url;
+  const displayImage =
+    product.thumbnailImage ||
+    product.images?.[0]?.url ||
+    product.variants?.[0]?.fulfillmentConfig?.designFiles?.[0]?.url;
 
   return (
-    <div className={cn(
-      "group relative bg-card dark:bg-card border-transparent overflow-hidden flex items-start gap-4 p-4",
-      className
-    )}>
+    <div
+      className={cn(
+        "group relative bg-card dark:bg-card border-transparent overflow-hidden flex items-start gap-4 p-4",
+        className
+      )}
+    >
       {/* Image Section */}
       <div className="relative bg-[#F0F0F0] overflow-hidden shrink-0 size-20 rounded-md">
-        <Link to="/products/$productId" params={{ productId: product.id }} className="block w-full h-full">
+        <Link
+          to="/products/$productId"
+          params={{ productId: product.id }}
+          className="block w-full h-full"
+        >
           {displayImage ? (
             <img
               src={displayImage}
@@ -263,7 +293,11 @@ function HorizontalProductLayout({
       <div className="flex-1 min-w-0 justify-between h-full py-0.5 flex flex-col">
         <div className="flex justify-between items-start gap-2">
           <div className="min-w-0">
-            <Link to="/products/$productId" params={{ productId: product.id }} className="block">
+            <Link
+              to="/products/$productId"
+              params={{ productId: product.id }}
+              className="block"
+            >
               <h3 className="font-medium text-foreground leading-tight transition-colors hover:text-primary text-base">
                 {product.title}
               </h3>

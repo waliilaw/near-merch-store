@@ -43,6 +43,15 @@ const plugins = [
     name: normalizedName,
     filename: "remoteEntry.js",
     dts: false,
+    getPublicPath: `return (function() {
+  try {
+    var script = document.currentScript || document.querySelector('script[src*="remoteEntry.js"]');
+    if (script && script.src) {
+      return script.src.replace(/remoteEntry\.js.*$/, '');
+    }
+  } catch(e) {}
+  return 'auto';
+})()`,
     exposes: {
       "./App": "./src/bootstrap.tsx",
       "./Router": "./src/router.tsx",
