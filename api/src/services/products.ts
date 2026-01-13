@@ -263,15 +263,12 @@ export const ProductServiceLive = (runtime: MarketplaceRuntime) =>
             return yield* store.findMany({ category, limit, offset, includeUnlisted });
           }),
 
-        getProduct: (productSlug) =>
+        getProduct: (identifier) =>
           Effect.gen(function* () {
-            // Extract publicKey from slug (last 12 characters)
-            const publicKey = productSlug.slice(-12);
-            
-            const product = yield* store.findByPublicKey(publicKey);
+            const product = yield* store.find(identifier);
 
             if (!product) {
-              return yield* Effect.fail(new Error(`Product not found: ${productSlug}`));
+              return yield* Effect.fail(new Error(`Product not found: ${identifier}`));
             }
             return { product };
           }),

@@ -204,7 +204,7 @@ function ProductDetailPage() {
   const handleAddToCart = () => {
     if (!selectedVariant) return;
     for (let i = 0; i < quantity; i++) {
-      addToCart(product.id, selectedVariantId || '', selectedSize, selectedColor);
+      addToCart(product.slug, selectedVariantId || '', selectedSize, selectedColor);
     }
   };
 

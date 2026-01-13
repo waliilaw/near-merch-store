@@ -7,6 +7,7 @@ import { Database } from './database';
 export class ProductStore extends Context.Tag('ProductStore')<
   ProductStore,
   {
+    readonly find: (identifier: string) => Effect.Effect<Product | null, Error>;
     readonly findByPublicKey: (publicKey: string) => Effect.Effect<Product | null, Error>;
     readonly findMany: (criteria: ProductCriteria) => Effect.Effect<{ products: Product[]; total: number }, Error>;
     readonly search: (query: string, category: ProductCategory | undefined, limit: number) => Effect.Effect<Product[], Error>;
@@ -100,6 +101,40 @@ export const ProductStoreLive = Layer.effect(
     };
 
     return {
+      find: (identifier) =>
+        Effect.tryPromise({
+          try: async () => {
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
+            
+            if (isUUID) {
+              const results = await db
+                .select()
+                .from(schema.products)
+                .where(eq(schema.products.id, identifier))
+                .limit(1);
+
+              if (results.length > 0) {
+                return await rowToProduct(results[0]!);
+              }
+              return null;
+            }
+            
+            const publicKey = identifier.slice(-12);
+            const results = await db
+              .select()
+              .from(schema.products)
+              .where(eq(schema.products.publicKey, publicKey))
+              .limit(1);
+
+            if (results.length === 0) {
+              return null;
+            }
+
+            return await rowToProduct(results[0]!);
+          },
+          catch: (error) => new Error(`Failed to find product: ${error}`),
+        }),
+
       findByPublicKey: (publicKey) =>
         Effect.tryPromise({
           try: async () => {
