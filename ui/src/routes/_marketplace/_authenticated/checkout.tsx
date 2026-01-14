@@ -813,6 +813,13 @@ function CheckoutPage() {
                     className="underline hover:text-neutral-950 transition-colors"
                   >
                     Terms of Service
+                  </Link>{' '}
+                  and acknowledge our{' '}
+                  <Link
+                    to="/disclaimer"
+                    className="underline hover:text-neutral-950 transition-colors"
+                  >
+                    Disclaimer
                   </Link>
                 </label>
               </div>

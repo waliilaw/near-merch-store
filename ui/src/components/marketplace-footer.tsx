@@ -98,6 +98,12 @@ export function MarketplaceFooter() {
             >
               Cookie Policy
             </Link>
+            <Link
+              to="/disclaimer"
+              className="link-muted text-sm"
+            >
+              Disclaimer
+            </Link>
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ import { Route as MarketplacePageTermsOfServiceRouteImport } from './routes/_mar
 import { Route as MarketplacePageRefundsReturnsRouteImport } from './routes/_marketplace/_page/refunds-returns'
 import { Route as MarketplacePagePrivacyPolicyRouteImport } from './routes/_marketplace/_page/privacy-policy'
 import { Route as MarketplacePageFaqRouteImport } from './routes/_marketplace/_page/faq'
+import { Route as MarketplacePageDisclaimerRouteImport } from './routes/_marketplace/_page/disclaimer'
 import { Route as MarketplacePageCookiePolicyRouteImport } from './routes/_marketplace/_page/cookie-policy'
 import { Route as MarketplaceAuthenticatedOrderConfirmationRouteImport } from './routes/_marketplace/_authenticated/order-confirmation'
 import { Route as MarketplaceAuthenticatedCheckoutRouteImport } from './routes/_marketplace/_authenticated/checkout'
@@ -125,6 +126,12 @@ const MarketplacePageFaqRoute = MarketplacePageFaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => MarketplacePageRoute,
 } as any)
+const MarketplacePageDisclaimerRoute =
+  MarketplacePageDisclaimerRouteImport.update({
+    id: '/disclaimer',
+    path: '/disclaimer',
+    getParentRoute: () => MarketplacePageRoute,
+  } as any)
 const MarketplacePageCookiePolicyRoute =
   MarketplacePageCookiePolicyRouteImport.update({
     id: '/cookie-policy',
@@ -219,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof MarketplaceAuthenticatedCheckoutRoute
   '/order-confirmation': typeof MarketplaceAuthenticatedOrderConfirmationRoute
   '/cookie-policy': typeof MarketplacePageCookiePolicyRoute
+  '/disclaimer': typeof MarketplacePageDisclaimerRoute
   '/faq': typeof MarketplacePageFaqRoute
   '/privacy-policy': typeof MarketplacePagePrivacyPolicyRoute
   '/refunds-returns': typeof MarketplacePageRefundsReturnsRoute
@@ -246,6 +254,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof MarketplaceAuthenticatedCheckoutRoute
   '/order-confirmation': typeof MarketplaceAuthenticatedOrderConfirmationRoute
   '/cookie-policy': typeof MarketplacePageCookiePolicyRoute
+  '/disclaimer': typeof MarketplacePageDisclaimerRoute
   '/faq': typeof MarketplacePageFaqRoute
   '/privacy-policy': typeof MarketplacePagePrivacyPolicyRoute
   '/refunds-returns': typeof MarketplacePageRefundsReturnsRoute
@@ -278,6 +287,7 @@ export interface FileRoutesById {
   '/_marketplace/_authenticated/checkout': typeof MarketplaceAuthenticatedCheckoutRoute
   '/_marketplace/_authenticated/order-confirmation': typeof MarketplaceAuthenticatedOrderConfirmationRoute
   '/_marketplace/_page/cookie-policy': typeof MarketplacePageCookiePolicyRoute
+  '/_marketplace/_page/disclaimer': typeof MarketplacePageDisclaimerRoute
   '/_marketplace/_page/faq': typeof MarketplacePageFaqRoute
   '/_marketplace/_page/privacy-policy': typeof MarketplacePagePrivacyPolicyRoute
   '/_marketplace/_page/refunds-returns': typeof MarketplacePageRefundsReturnsRoute
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/order-confirmation'
     | '/cookie-policy'
+    | '/disclaimer'
     | '/faq'
     | '/privacy-policy'
     | '/refunds-returns'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/order-confirmation'
     | '/cookie-policy'
+    | '/disclaimer'
     | '/faq'
     | '/privacy-policy'
     | '/refunds-returns'
@@ -366,6 +378,7 @@ export interface FileRouteTypes {
     | '/_marketplace/_authenticated/checkout'
     | '/_marketplace/_authenticated/order-confirmation'
     | '/_marketplace/_page/cookie-policy'
+    | '/_marketplace/_page/disclaimer'
     | '/_marketplace/_page/faq'
     | '/_marketplace/_page/privacy-policy'
     | '/_marketplace/_page/refunds-returns'
@@ -501,6 +514,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof MarketplacePageFaqRouteImport
+      parentRoute: typeof MarketplacePageRoute
+    }
+    '/_marketplace/_page/disclaimer': {
+      id: '/_marketplace/_page/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof MarketplacePageDisclaimerRouteImport
       parentRoute: typeof MarketplacePageRoute
     }
     '/_marketplace/_page/cookie-policy': {
@@ -693,6 +713,7 @@ const MarketplaceAuthenticatedRouteWithChildren =
 
 interface MarketplacePageRouteChildren {
   MarketplacePageCookiePolicyRoute: typeof MarketplacePageCookiePolicyRoute
+  MarketplacePageDisclaimerRoute: typeof MarketplacePageDisclaimerRoute
   MarketplacePageFaqRoute: typeof MarketplacePageFaqRoute
   MarketplacePagePrivacyPolicyRoute: typeof MarketplacePagePrivacyPolicyRoute
   MarketplacePageRefundsReturnsRoute: typeof MarketplacePageRefundsReturnsRoute
@@ -701,6 +722,7 @@ interface MarketplacePageRouteChildren {
 
 const MarketplacePageRouteChildren: MarketplacePageRouteChildren = {
   MarketplacePageCookiePolicyRoute: MarketplacePageCookiePolicyRoute,
+  MarketplacePageDisclaimerRoute: MarketplacePageDisclaimerRoute,
   MarketplacePageFaqRoute: MarketplacePageFaqRoute,
   MarketplacePagePrivacyPolicyRoute: MarketplacePagePrivacyPolicyRoute,
   MarketplacePageRefundsReturnsRoute: MarketplacePageRefundsReturnsRoute,
