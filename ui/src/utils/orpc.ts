@@ -1,6 +1,5 @@
 import { createORPCClient, onError } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
-import { ClientRetryPlugin } from '@orpc/client/plugins';
 import type { ContractRouterClient } from '@orpc/contract';
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -46,14 +45,6 @@ export const queryClient = new QueryClient({
 function createApiLink() {
   return new RPCLink({
     url: getApiUrl,
-    plugins: [
-      new ClientRetryPlugin({
-        default: {
-          retry: 3,
-          retryDelay: 1000,
-        },
-      }),
-    ],
     interceptors: [
       onError((error: unknown) => {
         console.error('oRPC API Error:', error);

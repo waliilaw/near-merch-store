@@ -186,6 +186,85 @@ export class PrintfulClient {
     return this.sdk.webhookV2;
   }
 
+  async configureWebhooks(params: {
+    defaultUrl: string;
+    events: Array<{ type: string }>;
+    expiresAt?: string | null;
+  }): Promise<{
+    defaultUrl: string;
+    expiresAt: string | null;
+    events: Array<{ type: string; url: string | null }>;
+    publicKey: string;
+    secretKey: string;
+  }> {
+    const response = await this.sdk.webhookV2.createWebhook(
+      {
+        default_url: params.defaultUrl,
+        expires_at: params.expiresAt || null,
+        events: params.events,
+      } as unknown as Record<string, unknown>,
+      this.storeId
+    );
+
+    const data = response as unknown as {
+      data: {
+        default_url: string;
+        expires_at: string | null;
+        events: Array<{ type: string; url: string | null }>;
+        public_key: string;
+        secret_key: string;
+      };
+    };
+
+    return {
+      defaultUrl: data.data.default_url,
+      expiresAt: data.data.expires_at,
+      events: data.data.events,
+      publicKey: data.data.public_key,
+      secretKey: data.data.secret_key,
+    };
+  }
+
+  async disableWebhooks(): Promise<void> {
+    await this.sdk.webhookV2.disableWebhook(this.storeId);
+  }
+
+  async getWebhookConfig(): Promise<{
+    defaultUrl: string;
+    expiresAt: string | null;
+    events: Array<{ type: string; url: string | null }>;
+    publicKey: string;
+  } | null> {
+    try {
+      const response = await this.sdk.webhookV2.getWebhooks(this.storeId);
+
+      const data = response as unknown as {
+        data: {
+          default_url: string;
+          expires_at: string | null;
+          events: Array<{ type: string; url: string | null }>;
+          public_key: string;
+        };
+      };
+
+      if (!data?.data?.default_url) {
+        return null;
+      }
+
+      return {
+        defaultUrl: data.data.default_url,
+        expiresAt: data.data.expires_at,
+        events: data.data.events,
+        publicKey: data.data.public_key,
+      };
+    } catch (error) {
+      if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
   get storesV2() {
     return this.sdk.storesV2;
   }
